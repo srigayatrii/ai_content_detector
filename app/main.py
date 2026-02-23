@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from app.db.database import engine
-from app.routers import auth
+from app.routers import auth, detection
 
 app = FastAPI()
 app.include_router(auth.router)
+app.include_router(detection.router)
+
 
 @app.get("/")
 def root():

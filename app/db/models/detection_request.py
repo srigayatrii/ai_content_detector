@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from datetime import datetime
+from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 
@@ -15,3 +16,6 @@ class DetectionRequest(Base):
     status = Column(String, nullable=False, default="processing")
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User",back_populates="detection_requests")
+    

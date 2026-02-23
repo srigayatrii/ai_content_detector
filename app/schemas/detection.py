@@ -2,9 +2,11 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Dict, Any
 
+
 class DetectionRequestCreate(BaseModel):
     text: str
     model_used: str
+
 
 class DetectionRequestResponse(BaseModel):
     id: int
@@ -18,6 +20,7 @@ class DetectionRequestResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class DetectionResultResponse(BaseModel):
     id: int
     request_id: int
@@ -25,5 +28,5 @@ class DetectionResultResponse(BaseModel):
     metrics: Dict[str, Any]
     created_at: datetime
 
-    class config:
+    class Config:
         from_attributes = True
