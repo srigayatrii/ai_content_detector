@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from app.db.database import engine
+from app.routers import auth
 
 app = FastAPI()
+app.include_router(auth.router)
 
 @app.get("/")
 def root():
-    return {"message": "ai content detector is working"}
+    return {"message": "ai content detector API working"}
 
 @app.get("/test_db")
 def test_db():
