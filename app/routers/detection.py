@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+import random
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -104,3 +105,47 @@ def get_detection_history(
             )
 
     return history
+
+
+
+
+@router.get("/{request_id}", response_model=DetectionResultResponse)
+def get_detection_by_id(
+    request_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    # 1. Get the detection request
+    detection_request = (
+        db.query(DetectionRequest)
+        .filter(DetectionRequest.id == request_id)
+        .first()
+    )
+
+    # 2. If request does not exist
+    if not detection_request:
+        raise HTTPException(status_code=404, detail="Detection request not found")
+
+    # 3. SECURITY CHECK (CRITICAL)
+    # Prevent users from accessing other users' detections
+    if detection_request.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to access this detection")
+
+    # 4. Get the result linked to this request
+    detection_result = (
+        db.query(DetectionResult)
+        .filter(DetectionResult.request_id == request_id)
+        .first()
+    )
+
+    if not detection_result:
+        raise HTTPException(status_code=404, detail="Detection result not found")
+
+    # 5. Return proper response schema
+    return DetectionResultResponse(
+        id=detection_result.id,
+        request_id=detection_result.request_id,
+        ai_probability=detection_result.ai_probability,
+        metrics=detection_result.metrics,
+        created_at=detection_result.created_at
+    )
