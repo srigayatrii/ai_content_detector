@@ -100,7 +100,7 @@ def get_detection_history(
                     request_id=result.request_id,
                     ai_probability=result.ai_probability,
                     metrics=result.metrics,
-                    created_at=result.created_at
+                    created_at=result.created_at 
                 )
             )
 
